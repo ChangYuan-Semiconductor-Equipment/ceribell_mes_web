@@ -1,0 +1,112 @@
+{% extends "cyg_base.html" %}
+
+{% block cyg_style %}
+
+{% endblock %}
+
+{% block cyg_content %}
+<blockquote class="layui-elem-quote layui-text">
+New Lot
+</blockquote>
+<div class="layui-card layui-panel">
+    <div class="layui-card-header">
+    </div>
+    <div class="layui-card-body">
+        <form class="layui-form" action="" method="POST">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">PLC state</label>
+                <div class="layui-input-block">
+                    <input type="text" name="plc_state" autocomplete="off" class="layui-input" value='{{plc_state}}' disabled>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">New lot #</label>
+                <div class="layui-input-block">
+                    <input type="text" name="new_lot" lay-verify="required" class="layui-input new_lot_input" placeholder="Please enter GTIN, EXPIRY and BATCH/LOT information on the label, example: 01008514200070211725032910C151I20240429" autocomplete="off" value="">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">Current lot</label>
+                <div class="layui-input-block">
+                    <input type="text" name="current_lot" autocomplete="off" class="layui-input current_lot" value='{{current_lot}}' disabled>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">Recipes</label>
+                <div class="layui-input-block">
+                    <label>
+                        <select name="recipe_select" lay-filter="recipe" lay-verify="required" class="recipe_select">
+                            <option value="">Optional</option>
+                            {% for recipe in recipes %}
+                                <option value="{{ recipe }}">{{ recipe }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">Current recipe</label>
+                <div class="layui-input-block">
+                    <input type="text" name="current_recipe" autocomplete="off" class="layui-input current_recipe" value='{{current_recipe}}' disabled>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                  <button type="submit" class="layui-btn" lay-submit lay-filter="submit_lot">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block cyg_script %}
+<script>
+    layui.use(['form', 'util'], function(){
+        let form = layui.form;
+        let layer = layui.layer;
+
+        // 提交事件
+        form.on('submit(submit_lot)', function(data){
+            let field = data.field; // 获取表单字段值
+
+            fetch('/submit_new_lot', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({lot_id: field.new_lot, recipe: field.recipe_select})
+            })
+            .then(response => {return response.json()})
+            .then(data => {
+                const icon_code = data["icon_code"]
+                const message = data["message"]
+                const current_lot = data["current_lot"]
+                const current_recipe = data["current_recipe"]
+                layer.alert(message, {
+                    icon: icon_code,
+                    title: '开工单结果',
+                    success: function(){
+                        let current_lot_input = document.querySelector('.current_lot');
+                        current_lot_input.value = current_lot
+                        let new_lot_input = document.querySelector('.new_lot_input');
+                        new_lot_input.value = ""
+                        let current_recipe_input = document.querySelector('.current_recipe');
+                        current_recipe_input.value = current_recipe
+                        let recipe_select = document.querySelector('.recipe_select');
+                        recipe_select.value = ""
+                        form.render('select')
+                    }
+                });
+            })
+            .catch(error => console.error('Error:', error));
+            return false // 阻止表单提交
+        })
+    })
+</script>
+{% endblock %}
+
