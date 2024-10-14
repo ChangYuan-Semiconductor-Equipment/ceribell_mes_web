@@ -1,7 +1,0 @@
-2024-10-14 12:36:01,447 - INFO - handler:87 - Connection enabled
-2024-10-14 12:36:01,447 - INFO - controller:192 - *** CYG SECSGEM 服务已启动 *** -> 等待工厂 EAP 连接!
-2024-10-14 12:36:01,457 - WARNING - ceribell:143 - *** plc未连接 *** -> plc地址是: 192.168.10.2!
-2024-10-14 12:36:01,767 - WARNING - ceribell:148 - *** plc connect success*** -> plc地址是: 192.168.10.2.
-2024-10-14 13:03:46,237 - INFO - handler:87 - Connection enabled
-2024-10-14 13:03:46,251 - INFO - controller:192 - *** CYG SECSGEM 服务已启动 *** -> 等待工厂 EAP 连接!
-2024-10-14 13:03:46,260 - WARNING - ceribell:143 - *** plc未连接 *** -> plc地址是: 192.168.10.2!
